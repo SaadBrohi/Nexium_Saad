@@ -1,36 +1,30 @@
 "use client";
-
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
-export default function QuoteForm({
-  onSubmit,
-}: {
+type Props = {
   onSubmit: (topic: string) => void;
-}) {
+};
+
+export default function QuoteForm({ onSubmit }: Props) {
   const [topic, setTopic] = useState("");
 
-  const submit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!topic.trim()) return;
     onSubmit(topic);
-    setTopic("");
   };
 
   return (
-    <form
-      onSubmit={submit}
-      className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mt-10 transition-all"
-    >
-      <Input
-        placeholder="e.g. motivation"
+    <form onSubmit={handleSubmit} className="flex gap-2 justify-center">
+      <input
+        type="text"
         value={topic}
         onChange={(e) => setTopic(e.target.value)}
+        placeholder="Enter a topic..."
+        className="input input-bordered w-full max-w-md"
       />
-      <Button type="submit" className="w-full sm:w-auto">
+      <button type="submit" className="btn btn-primary">
         Generate
-      </Button>
+      </button>
     </form>
   );
 }

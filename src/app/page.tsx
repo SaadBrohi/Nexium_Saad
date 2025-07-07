@@ -1,58 +1,86 @@
 "use client";
 
+import Themer from "@/components/Themer";
 import { useState } from "react";
 import QuoteForm from "@/components/quoteform";
-import { generateQuote } from "@/lib/generatequotes"; // 🧠 Uses Ollama locally
+
+type Quote = {
+  _id: string;
+  content: string;
+  author: string;
+};
+
+const fixedQuotes: Quote[] = [
+  {
+    _id: "1",
+    content:
+      "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+    author: "Winston Churchill",
+  },
+  {
+    _id: "2",
+    content: "Life is what happens when you're busy making other plans.",
+    author: "John Lennon",
+  },
+  {
+    _id: "3",
+    content: "The only way to do great work is to love what you do.",
+    author: "Steve Jobs",
+  },
+  {
+    _id: "4",
+    content:
+      "Your time is limited, so don’t waste it living someone else’s life.",
+    author: "Steve Jobs",
+  },
+  {
+    _id: "5",
+    content:
+      "Happiness is not something ready made. It comes from your own actions.",
+    author: "Dalai Lama",
+  },
+];
 
 export default function HomePage() {
-  const [quote, setQuote] = useState("");
+  const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (topic: string) => {
     setLoading(true);
-    setError("");
-    setQuote("");
 
-    try {
-      const result = await generateQuote(topic);
-      setQuote(result);
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong while generating the quote.");
-    } finally {
+    // simulate loading
+    setTimeout(() => {
+      const shuffled = [...fixedQuotes].sort(() => 0.5 - Math.random());
+      setQuotes(shuffled.slice(0, 3)); // return 3 random quotes
       setLoading(false);
-    }
+    }, 500);
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-100 to-white p-4 max-w-2xl mx-auto">
+    <main className="min-h-screen bg-base-200 text-base-content p-4 max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold text-center mt-10 mb-6">
         Quote Generator
       </h1>
 
       <QuoteForm onSubmit={handleSubmit} />
 
-      {/* 🔄 Loading Spinner */}
       {loading && (
         <div className="flex justify-center mt-10">
-          <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+          <span className="loading loading-spinner text-primary"></span>
         </div>
       )}
 
-      {/* ⚠️ Error Message */}
-      {error && (
-        <div className="mt-6 mx-auto max-w-md bg-red-100 text-red-800 border border-red-300 px-4 py-3 rounded-lg text-center">
-          {error}
-        </div>
-      )}
-
-      {/* 💬 Display the LLaMA-generated Quote */}
-      {quote && (
-        <div className="mt-8 bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl text-center animate-fadeIn">
-          <p className="text-xl italic text-gray-800">“{quote}”</p>
-        </div>
-      )}
+      <div className="mt-8 space-y-4">
+        {quotes.map((quote) => (
+          <div
+            key={quote._id}
+            className="p-6 bg-base-100 rounded-2xl shadow-xl"
+          >
+            <p className="text-xl italic">“{quote.content}”</p>
+            <p className="text-right mt-4 font-semibold">— {quote.author}</p>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
