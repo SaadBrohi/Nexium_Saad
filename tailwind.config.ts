@@ -7,8 +7,9 @@ const config: Config = {
     extend: {},
   },
   plugins: [require("daisyui")],
+  // @ts-ignore – DaisyUI adds this key at runtime, but TypeScript doesn’t recognize it
   daisyui: {
-    themes: ["light", "dark", "cupcake", "dracula"], // add more themes if you want
+    themes: ["light", "dark", "cupcake", "dracula"],
   },
 };
 
